@@ -1,0 +1,94 @@
+---
+title: "Applied Spatial Data Analysis with R"
+subtitle: "Chapter 3 : Visualizing Spatial Data"
+output: html_notebook
+---
+
+# Motivation
+This notebook has been created to understand codes in Chapter 3.
+
+# 02-05-2022
+
+## The Traditional Plot System
+### Plotting points
+
+```{r}
+# Clearing the global environment
+rm(list = ls())
+
+# Loding the sp package
+library(sp)
+
+# Loading the meuse data set
+data(meuse)
+
+# Turning the dataframe into SpatialPointDataFrame
+coordinates(meuse) <- c("x", "y")
+
+
+# Plotting
+plot(meuse)
+title("Points")
+
+```
+### Plotting lines
+```{r}
+# Extracting the coordinate points
+cc <- coordinates(meuse)
+
+# No idea what happened here!
+m.sl <- SpatialLines(list(Lines(list(Line(cc)), "line1")))
+
+# Plotting
+plot(m.sl)
+title("Lines")
+```
+
+### Plotting Polygons
+```{r}
+# Loading the meuse.riv data set
+data(meuse.riv)
+
+# Not a clue ?!
+meuse.lst <- list(Polygons(list(Polygon(meuse.riv)),"meuse,riv"))
+meuse.pol <- SpatialPolygons(meuse.lst)
+
+# Plotting
+plot(meuse.pol, col = "grey")
+title("Polygons")
+
+
+```
+
+### Plotting grid
+```{r}
+# Loading the data set
+data(meuse.grid)
+
+# Conerting to SpatialPointsDataFrame 
+coordinates(meuse.grid) <- c("x", "y")
+
+# Changing to SpatialPixels
+meuse.grid <- as(meuse.grid, "SpatialPixels")
+
+# plotting
+image(meuse.grid, col = "grey")
+title("grid")
+```
+### Adding all the plots together
+```{r}
+image(meuse.grid, col = "lightgrey")
+plot(meuse.pol, col = "grey", add = TRUE)
+plot(meuse, add = TRUE)
+```
+
+### Axis and Layout elements
+```{r}
+layout(matrix(c(1, 2), 1, 2))
+plot(meuse.pol, axes = TRUE)
+plot(meuse.pol, axes = FALSE)
+axis(1, at = c(178000 + 0:2 * 2000), cex.axis = 0.7)
+axis(2, at = c(326000 + 0:3 * 4000), cex.axis = 0.7)
+box()
+```
+

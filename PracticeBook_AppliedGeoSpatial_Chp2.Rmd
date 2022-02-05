@@ -1,0 +1,98 @@
+---
+title: "Applied Spatial Data Analysis with R"
+subtitle: "Chapter 2 : Classes for Spatial Data in R"
+output: html_notebook
+---
+
+# Introduction
+This Notebook is rough document where I have written all the codes that I found interesting and experimented upon. This notebook is more like a digital record and may turn out to be rough patches of codes in the future.
+
+# Packages
+```{r Packages list, message=FALSE, warning=FALSE, include=FALSE}
+# Clearing the variables list
+rm(list = ls())
+
+# loading required packages
+library(sp)
+```
+
+
+
+# 01-15-2022
+```{r}
+getClass("CRS")
+```
+
+Building a simple Spatial object from a bounding box matrix, and a missing coordinate reference system:
+```{r}
+m <- matrix(c(0,0,1,1), ncol = 2, dimnames = list(NULL, c("min", "max")))
+
+crs <- CRS(projargs = as.character(NA))
+
+crs
+
+S <- Spatial(bbox = m, proj4string = crs)
+S
+```
+ 
+ 
+ SpatialPoints
+ 
+```{r}
+CRAN_df <- read.table("datasets/CRAN051001a.txt", header = TRUE)
+CRAN_mat <- cbind(CRAN_df$long, CRAN_df$lat)
+row.names(CRAN_mat) <- 1:nrow(CRAN_mat)
+str(CRAN_mat)
+```
+ 
+```{r}
+getClass("SpatialPoints")
+```
+
+# 01-22-2022
+
+## methods
+```{r}
+llCRS <- CRS("+proj=longlat +ellps=WGS84")
+CRAN_sp <- SpatialPoints(CRAN_mat, proj4string = llCRS)
+summary(CRAN_sp)
+bbox(CRAN_sp)
+```
+
+## SpatialPointsDataFrame
+```{r}
+CRAN_spdf1 <- SpatialPointsDataFrame(CRAN_mat,CRAN_df, proj4string = llCRS, match.ID = T)
+CRAN_spdf1[4,]
+```
+
+## SpatialLines
+```{r}
+library(maps)
+japan <- map("world", "japan", plot = TRUE)
+p4s <- CRS("+proj=longlat +ellps=WGS84")
+library(maptools)
+SLjapan <- map2SpatialLines(japan, proj4string = p4s)
+str(SLjapan, max.level = 2)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
